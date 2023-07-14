@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>New Message</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+  </head>
+  <body>
+    <br>
+    <div class="form-container">
+      <h1>New Message</h1>
+      <form action="/send" method="post" onsubmit="showLoadingPopup()">
+        <label for="to">To: </label>{% set clients = [] %}{% for record in records %}{% set _ = clients.append(record.email) %}{% endfor %}        
+        <input type="text" name="clients" value="{{clients}}" required>
+        {% for template in templates %}
+        <label for="subject">Subject:</label>
+        <input type="text" id="subject" name="subject" value="{{template.heading}}" required>
+        <label for="message">Message:</label>
+        <textarea id="message" name="message">{{template.message}} </textarea>{% endfor %}
+        <input type="submit" value="Send">
+      </form>
+      <div id="loadingPopup" class="popup">
+        <p> Sending... </p>
+        <div class="loading">
+          <img src="/static/images/loading.gif" alt="Loading GIF" style="width: 100px; height: 100px;">
+        </div>
+      </div>
+    </div>
+    <script>
+      function showLoadingPopup() {
+        // Show loading pop-up
+        document.getElementById("loadingPopup").style.display = "block";
+  
+        // Hide the pop-up after 3 seconds
+        setTimeout(function() {
+          document.getElementById("loadingPopup").style.display = "none";
+        }, 3500);
+      }
+    </script>
+  </body>
+</html>

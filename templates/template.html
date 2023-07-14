@@ -1,0 +1,11 @@
+<html>
+<body>
+    <p><img src="cid:logo" alt="Logo" style="width: 100px; height: auto;"</p>
+    {% for record in records %}
+    <p>{{record.salutation}}</p>
+    <h2><b><u>{{record.heading}}</u></b></h2>
+    <p>{{record.message}}</p>
+    <p>{{record.endtag}}</p>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Form Example</title>
+</head>
+<body>
+  <h1>Form Example</h1>
+  <form action="/form" method="POST">
+    {% for record in records %}
+    <div>
+      <label for="name-{{ record[0] }}">Name:</label>
+      <input type="text" id="name-{{ record[0] }}" name="name-{{ record[0] }}" value="{{ record[1] }}">
+    </div>
+    <div>
+      <label for="email-{{ record[0] }}">Email:</label>
+      <input type="text" id="email-{{ record[0] }}" name="email-{{ record[0] }}" value="{{ record[2] }}">
+    </div>
+    {% endfor %}
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>

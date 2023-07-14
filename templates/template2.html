@@ -1,0 +1,13 @@
+<html>
+<body>
+    <p><img src="Logo/email2.jpg" alt="Logo"></p>
+    {% for record in records %}
+    {% if record.service=="USSD"%}
+    <p>{{record.salutation}}</p>
+    <h2><b><u>{{record.heading}}</u></b></h2>
+    <p>{{record.message}}</p>
+    <p>{{record.endtag}}</p>
+    {% endif %}
+    {% endfor %}
+</body>
+</html>

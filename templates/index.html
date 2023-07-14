@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Mfs Mail Aut</title>
+  <script src="https://kit.fontawesome.com/c493d3eb23.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../static/css/styl.css">
+</head>
+
+<body>
+  <div class="header">
+    <div class="site-header">
+      <img src="/static/images/email3.png" alt="logo" style="width:80px;height:80px;" />
+      <h1 class="site-name">Mfs Mail Aut</h1>
+    </div>
+    <div class="search-bar">
+      <h1>Hello, {{username|capitalize}} &#128075;</h1>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="sidebar">
+      <h2>Main Menu</h2>
+      <ul class="menu">
+        <li class="menu-item id=" mailList""><a href="#MailList"><i class="fas fa-envelope"></i> Mail List</a></li>
+        <li class="menu-item id=" templates""><a href="#Templates"><i class="fas fa-paper-plane"></i> Templates</a></li>
+        <li class="menu-item id=" sendMail""><a href="#SendMail"><i class="fas fa-file-alt"></i> Compose Mail</a></li>
+        <li class="menu-item id=" reports"><a href="#Reports"><i class="fas fa-exclamation-circle"></i> Reports</a></li>
+        <li class="menu-item"><a href="#trash"><i class="fas fa-trash"></i> Trash</a></li>
+      </ul>
+      <div class="footer">
+        <p>&copy; 2023 MFS Limited.</p>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="statistics">
+        <div class="statistic">
+          <div class="statistic-info">
+            <p class="statistic-number" data-count="500">0</p>
+            <h3>Email Sent</h3>
+          </div>
+          <img src="/static/images/send.png" alt="Logo" class="logo">
+        </div>
+        <div class="statistic">
+          <div class="statistic-info">
+            <p class="statistic-number" data-count="1000">0</p>
+            <h3>Clients</h3>
+          </div>
+          <i class="fas fa-file-alt"></i>
+        </div>
+        <div class="statistic">
+          <div class="statistic-info">
+            <p class="statistic-number" data-count="2000">0</p>
+            <h3>Unlimited</h3>
+          </div>
+          <i class="fas fa-exclamation-circle"></i>
+        </div>
+      </div>
+
+      <!-- Home Page -->
+      <div id="home" class="page">
+        <hr class="line">
+        <h3 style="text-align: center;">Welcome Home</h3>
+        <hr class="line">
+        <div class="features">
+          <div class="feature">
+            <i class="fas fa-user"></i>
+            <h3>Personalization</h3>
+            <p>Create personalized emails for each recipient to increase engagement.</p>
+          </div>
+          <div class="feature">
+            <i class="fas fa-envelope"></i>
+            <h3>Email Templates</h3>
+            <p>Create custom email templates to maintain consistent branding and save time.</p>
+          </div>
+          <div class="feature">
+            <i class="fas fa-clock"></i>
+            <h3>Automation</h3>
+            <p>Schedule and send automated email sequences to nurture leads and customers.</p>
+          </div>
+        </div>
+        <!-- Add your desired content for the home page here -->
+      </div>
+      <div id="MailList" class="page">
+        <h2>Mail List</h2>
+        <hr class="line">
+        <h3 style="text-align: center;">Find Mail Clients</h3>
+        <hr class="line">
+      </div>
+
+      <!-- Template -->
+      <div id="Templates" class="page">
+        <h2>Templates</h2>
+        <hr class="line">
+        <h3 style="text-align: center;">Find & Welcome New Contacts</h3>
+        <hr class="line">
+        <br>
+        <div class="button-container">
+          <div class="button"> <img src="/static/images/send.png" alt="Logo"> SMS Template</div>
+          <div class="button"> <img src="/static/images/send.png" alt="Logo"> USSD Template</div>
+          <div class="button"> <img src="/static/images/send.png" alt="Logo"> MAIL Template</div>
+          <div class="button"> <img src="/static/images/send.png" alt="Logo"> TWEET Template</div>
+        </div>
+      </div>
+      <!-- end of Template-->
+
+      <!--Send Mail-->
+      <div id="SendMail" class="page">
+        <h2>Send Mail</h2>
+        <hr class="line">
+        <h3 style="text-align: center;">Send Mail</h3>
+        <hr class="line">
+        <div class="container2">
+          <h1>New SMS Message</h1>
+          <form>
+            <label for="subject">Subject:</label>
+            <input type="text" id="subject" name="subject">
+
+            <label for="service">Service:</label>
+            <select id="service" name="service" onchange="updateRecipients()">
+              <option value="SMS">SMS</option>
+              <option value="USSD">USSD</option>
+              <!-- Add more options for other services -->
+            </select>
+
+            <label for="recipients">Recipients:</label>
+            <textarea id="recipients" name="recipients" rows="2" readonly></textarea>
+
+            <label for="message-body">Message:</label>
+            <textarea id="message-body" name="message-body" rows="6"></textarea>
+
+            <button class="button1" type="submit">Send Message</button>
+          </form>
+        </div>
+      </div>
+
+      <!--end of Send Mail-->
+
+      <!--Reports-->
+      <div id="Reports" class="page">
+        <h2 style="text-align: center;">Mail Sent</h2>
+        <hr>
+        <br>
+        <div id="report">
+          <input type="text" id="filterInput" placeholder="Search...">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Recipient</th>
+                <th>Subject</th>
+                <th>DateTime</th>
+                <th>Service</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in email_report[-5:]|reverse %}
+              <tr>
+                <td>{{ item['recipient'] }}</td>
+                <td>{{ item['subject'] }}</td>
+                <td>{{ item['timestamp'] | format_timestamp }}</td>
+                <td>{{ item['service'] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <a href="/download_data" download>
+          <button type="submit" value="Submit">Download</button>
+        </a>
+      </div>
+      <!-- end of Reports-->
+
+      <!--Trash-->
+      <div id="trash" class="page">
+        <h2>Trash</h2>
+        <p>This is the Trash page content.</p>
+      </div>
+      <!-- end of Trash-->
+    </div>
+  </div>
+  <script>
+    // Show only the home page by default
+    document.getElementById('home').style.display = 'block';
+
+    // Get all the navigation links
+    const navigationLinks = document.querySelectorAll('.sidebar a');
+
+    // Add click event listener to each navigation link
+    navigationLinks.forEach(function (link) {
+      link.addEventListener('click', function (event) {
+        // Prevent the default link behavior
+        event.preventDefault();
+
+        // Hide all the pages
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(function (page) {
+          page.style.display = 'none';
+        });
+
+        // Show the clicked page
+        const targetPage = this.getAttribute('href');
+        document.querySelector(targetPage).style.display = 'block';
+      });
+    });
+
+    function startCountAnimation() {
+      var counters = document.querySelectorAll('.statistic-number');
+
+      counters.forEach(function (counter) {
+        var targetValue = parseInt(counter.dataset.count);
+        var currentValue = 0;
+        var increment = Math.ceil(targetValue / 100);
+
+        var interval = setInterval(function () {
+          if (currentValue >= targetValue) {
+            clearInterval(interval);
+            currentValue = targetValue;
+          }
+
+          counter.textContent = currentValue;
+          currentValue += increment;
+        }, 10);
+      });
+    }
+
+    window.addEventListener('load', startCountAnimation);
+
+    // Add an event listener to the filter input
+    document.getElementById('filterInput').addEventListener('input', function () {
+      filterTable(this.value);
+    });
+
+    // Filter the table based on the input value
+    function filterTable(filterValue) {
+      var table = document.querySelector('.report-table');
+      var rows = table.querySelectorAll('tbody tr');
+
+      for (var i = 0; i < rows.length; i++) {
+        var rowData = rows[i].querySelectorAll('td');
+        var showRow = false;
+
+        for (var j = 0; j < rowData.length; j++) {
+          var cellData = rowData[j].textContent || rowData[j].innerText;
+          if (
+            cellData.toLowerCase().indexOf(filterValue.toLowerCase()) > -1 ||
+            (j === 0 && cellData.toLowerCase().indexOf(filterValue.toLowerCase()) > -1) ||
+            (j === 3 && cellData.toLowerCase().indexOf(filterValue.toLowerCase()) > -1)
+          ) {
+            showRow = true;
+            break;
+          }
+        }
+
+        if (showRow) {
+          rows[i].style.display = '';
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+    }
+
+    // Populate recipient emails based on selected service
+    function updateRecipients() {
+      const serviceSelect = document.getElementById('service');
+      const recipientsTextarea = document.getElementById('recipients');
+      const selectedService = serviceSelect.value;
+
+      // Get recipient emails for the selected service from the server-side data
+      const recipients = JSON.parse('{{ records | tojson }}')
+        .filter(recipient => recipient.service === selectedService)
+        .map(recipient => recipient.email);
+
+      recipientsTextarea.value = recipients.join('\n');
+    }
+
+  </script>
+</body>
+
+</html>
