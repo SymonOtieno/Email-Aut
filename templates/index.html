@@ -118,14 +118,14 @@
             <input type="text" id="subject" name="subject">
 
             <label for="service">Service:</label>
-            <select id="service" name="service" onchange="updateRecipients()">
-              <option value="SMS">SMS</option>
-              <option value="USSD">USSD</option>
-              <!-- Add more options for other services -->
+            <select id="service" name="service" onchange="updateRecipientsAndTemplate(); updateRecipients()">
+              {% for service in services %}
+                <option value="{{ service }}">{{ service }}</option>
+              {% endfor %}
             </select>
 
             <label for="recipients">Recipients:</label>
-            <textarea id="recipients" name="recipients" rows="2" readonly></textarea>
+            <textarea id="recipients" name="recipients" rows="2"></textarea>
 
             <label for="message-body">Message:</label>
             <textarea id="message-body" name="message-body" rows="6"></textarea>
@@ -273,6 +273,75 @@
 
       recipientsTextarea.value = recipients.join('\n');
     }
+
+    // JavaScript to fetch services from the server and populate the select element
+    async function fetchServices() {
+      try {
+          const response = await fetch('/services');
+          const services = await response.json();
+          const selectElement = document.getElementById('service');
+
+          services.forEach(service => {
+              const option = document.createElement('option');
+              option.value = service;
+              option.textContent = service;
+              selectElement.appendChild(option);
+          });
+      } catch (error) {
+          console.error('Error fetching services:', error);
+      }
+  }
+
+  async function updateRecipientsAndTemplate() {
+        const selectedService = document.getElementById('service').value;
+        const response = await fetch('/email_template', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `service=${encodeURIComponent(selectedService)}`
+        });
+
+        const { subject, message } = await response.json();
+        document.getElementById('subject').value = subject;
+        document.getElementById('message-body').value = message;
+    }
+
+    function onPageLoad() {
+        fetchServices();
+        updateRecipientsAndTemplate();
+    }
+
+    document.addEventListener('DOMContentLoaded', onPageLoad);
+
+    // Function to handle the click event for the navigation links
+  function handleNavigationClick(event) {
+    // Prevent the default link behavior
+    event.preventDefault();
+
+    // Remove the "menu-item-selected" class from all menu items
+    navigationLinks.forEach(function (item) {
+      item.classList.remove('menu-item-selected');
+    });
+
+    // Add the "menu-item-selected" class to the clicked menu item
+    this.classList.add('menu-item-selected');
+
+    // Hide all the pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(function (page) {
+      page.style.display = 'none';
+    });
+
+    // Show the clicked page
+    const targetPage = this.getAttribute('href');
+    document.querySelector(targetPage).style.display = 'block';
+  }
+
+  // Add click event listener to each navigation link
+  navigationLinks.forEach(function (link) {
+    link.addEventListener('click', handleNavigationClick);
+  });
 
   </script>
 </body>

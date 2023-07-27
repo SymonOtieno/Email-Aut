@@ -360,3 +360,19 @@
       .button1:hover {
         background-color: #0056b3;
       }
+
+      .menu-item-selected {
+        background-color: #099fb9;
+        border-radius: 20px;
+      }
+
+ 
+      select 
+      {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 10px;
+          border: 1px solid #06a04b;
+          border-radius: 5px;
+          box-sizing: border-box;
+      }

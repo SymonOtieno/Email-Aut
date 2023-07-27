@@ -219,6 +219,29 @@ def download_data():
     # Send the file for download
     return send_file(filename, as_attachment=True)
 
+@app.route('/services')
+def get_services():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    query = "SELECT DISTINCT service FROM email_listing"
+    cur.execute(query)
+    services = [service[0] for service in cur.fetchall()]
+    return jsonify(services)
+
+@app.route('/email_template', methods=['POST'])
+def get_email_template():
+    service = request.form['service']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    query = "SELECT heading, message FROM templates WHERE service = %s"
+    cur.execute(query, (service,))
+    result = cur.fetchone()
+    if result:
+        subject, message = result
+    else:
+        subject, message = "", ""
+    return jsonify({"subject": subject, "message": message})
+
 
 @app.route('/add_option', methods=['POST'])
 def add_option():
