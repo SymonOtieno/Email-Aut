@@ -28,7 +28,18 @@ def get_db_connection():
 # Login endpoint
 @app.route("/")
 def home():
-    return render_template('login.html')
+        return render_template('login.html')
+
+@app.route("/home", methods=["POST"])
+def index():
+    # Your login logic here...
+    # After successful authentication, set the 'logged_in' flag in the session
+    session['logged_in'] = True
+
+    previous_page = request.referrer
+    
+    return redirect(previous_page or url_for('home'))
+
 
 # Custom Jinja filter for formatting timestamp
 def format_timestamp(timestamp):
@@ -76,6 +87,7 @@ def login():
         if data is None:
             return "Username or Password wrong"
         else:
+            session['logged_in'] = True
             return render_template("index.html", records=records, deleted_records=deleted_records, templates=templates, email_report=email_report, username=username)
 
 # Template Route
@@ -123,37 +135,37 @@ def submit():
 # Send Route
 @app.route('/send', methods=['POST'])
 def send():
-    selected_value = session.get('selectedValue')
-    selected_value = selected_value.upper()
-    print(selected_value)
     if request.method == 'POST':
         conn = get_db_connection()
         cur = conn.cursor()
         templ = conn.cursor()
 
-        clients = request.form.getlist('clients')
+        recipients = request.form.getlist('recipients')
         subject = request.form['subject']
-        message = request.form['message']
+        service = request.form['service']
+        message = request.form['message-body']
 
         # Subject Update
         # Update the existing record
         update_query = "UPDATE templates SET heading = %s, message = %s WHERE service = %s"
-        update_values = (subject, message, selected_value)
+        update_values = (subject, message, service)
         cur.execute(update_query, update_values)
         conn.commit()
 
-        #Drop SMS service data
+        print(f"Recipients==> {recipients}")
+
+         #Drop SMS service data
         # Use the DELETE statement to delete data from the database table
         delete_query = "DELETE FROM email_listing WHERE service = %s"
-        delete_value = (selected_value, )
+        delete_value = (service, )
         cur.execute(delete_query, delete_value)
         conn.commit()
 
         # Update the email_listings database
-        elements = eval(clients[0])
+        elements = recipients[0].split('\r\n')
         
         for email in elements:
-            data = [(email,selected_value)]
+            data = [(email,service)]
             query = "INSERT INTO email_listing (email, service) VALUES (%s, %s)"
             cur.executemany(query, data)
 
@@ -161,7 +173,6 @@ def send():
             conn.commit()
 
         query = ("SELECT * FROM templates WHERE service = %s")
-        service = selected_value
         params = (service,)
         cur.execute(query, params)
         records = []
@@ -172,7 +183,6 @@ def send():
         html_content = render_template("template.html",records=records)
 
         query = ("SELECT email FROM email_listing WHERE service = %s")
-        service = selected_value
         params = (service,)
         cur.execute(query, params)
         records = cur.fetchall()
@@ -199,7 +209,7 @@ def send():
             server.sendmail("symon7672@gmail.com", [record[0]], msg.as_string())
 
             # Define the values to be inserted
-            values = (record[0], email_subject,selected_value)
+            values = (record[0], email_subject,service)
             # Execute the query with the provided values
             cur.execute(query, values)
             # Commit the changes to the database
@@ -256,7 +266,7 @@ def get_data():
     conn = get_db_connection()
     cur = conn.cursor()
     # Fetch service name and emails from the database
-    cur.execute("SELECT service, email FROM email_listing WHERE is_deleted = FALSE")
+    cur.execute("SELECT  service, email FROM email_listing WHERE is_deleted = FALSE")
     data = cur.fetchall()
     print(data)
     return jsonify(data)
