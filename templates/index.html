@@ -80,14 +80,65 @@
             <p>Schedule and send automated email sequences to nurture leads and customers.</p>
           </div>
         </div>
-        <!-- Add your desired content for the home page here -->
       </div>
+
+      <!-- Mail List -->
       <div id="MailList" class="page">
         <h2>Mail List</h2>
         <hr class="line">
         <h3 style="text-align: center;">Find Mail Clients</h3>
         <hr class="line">
+        <div class="container">
+          <h1>Filtered Service List</h1>
+          <div class="filter">
+              <label for="category">Filter by Service:</label>
+              <select id="category">
+                  <!-- Options will be dynamically populated using JavaScript -->
+              </select>
+          </div>
+          <div class="item-list" id="itemList">
+              <!-- The filtered items will be displayed here -->
+          </div>
+        </div>
+        <!-- Floating button container -->
+        <div class="floating-button-container">
+          <button class="floating-button">+</button>
+          <!-- Edit and Delete buttons within the floating button -->
+          <div class="floating-button-dropdown">
+            <button class="add-button" onclick="openPopupForm()">Add</button>
+            <button class="delete-button" onclick="deletePopupForm()">Delete</button>
+          </div>
+          <!-- Popup Save Form -->
+          <div class="popup-form" id="popupForm">
+            <h2>Add Client</h2>
+            <form onsubmit="saveClient(event)">
+              <label for="email">Email:</label>
+              <input type="email" id="email" name="email" required>
+
+              <label for="service-temp">Service:</label>
+              <input type="text" id="service-save" name="service-save" required>
+
+              <button class="add-button" type="submit">Add</button>
+            </form>
+            <button class="cancel-button" onclick="closePopupForm()">Cancel</button>
+          </div>
+           <!-- Popup Delete Form -->
+          <div class="delete-form" id="delete-form">
+            <h2>Delete Client</h2>
+            <form onsubmit="deleteClient(event)">
+              <label for="email">Email:</label>
+              <input type="email" id="email-del" name="email-del" required>
+
+              <label for="service-temp">Service:</label>
+              <input type="text" id="service-del" name="service-del" required>
+
+              <button class="delete-button" type="submit">Delete</button>
+            </form>
+            <button class="cancel-button" onclick="closedelPopupForm()">Cancel</button>
+          </div>
+        </div>
       </div>
+      <!-- Mail List -->
 
       <!-- Template -->
       <div id="Templates" class="page">
@@ -97,10 +148,52 @@
         <hr class="line">
         <br>
         <div class="button-container">
-          <div class="button"> <img src="/static/images/send.png" alt="Logo"> SMS Template</div>
-          <div class="button"> <img src="/static/images/send.png" alt="Logo"> USSD Template</div>
-          <div class="button"> <img src="/static/images/send.png" alt="Logo"> MAIL Template</div>
-          <div class="button"> <img src="/static/images/send.png" alt="Logo"> TWEET Template</div>
+          {% for template in templates %}
+          <div class="button" onclick="showTemplatePopup('{{ template.service }}')"> <img src="/static/images/send.png" alt="Logo"> {{template.service}} Template</div>
+          {% endfor%}
+        </div>
+        <!-- Floating button container -->
+        <div class="floating-button-container">
+          <button class="floating-button">+</button>
+          <!-- Edit and Delete buttons within the floating button -->
+          <div class="floating-button-dropdown">
+            <button class="add-button" onclick="openTemplateForm()">Add</button>
+            <button class="delete-button" onclick="deleteTemplateForm()">Delete</button>
+          </div>
+          <!-- Popup Save Form -->
+          <div class="popup2-form" id="popup2Form">
+            <h2>Add Template</h2>
+            <form onsubmit="saveTemplate(event)">
+              <label for="serv-temp">Service:</label>
+              <input type="text" id="serv-temp" name="serv-temp" required>
+
+              <label for="salute-temp">Salutation:</label>
+              <input type="text" id="salute-temp" name="salute-temp" required>
+
+              <label for="head-temp">Heading:</label>
+              <input type="text" id="head-temp" name="head-temp" required>
+
+              <label for="message-temp">Message:</label>
+              <textarea id="message-temp" name="message-temp" rows="6"></textarea>
+
+              <label for="endtag-temp">Endtag:</label>
+              <input type="text" id="endtag-temp" name="endtag-temp" required>
+
+              <button class="add-button" type="submit">Add</button>
+            </form>
+            <button class="cancel-button" onclick="closetempPopupForm()">Cancel</button>
+          </div>
+           <!-- Popup Delete Form -->
+          <div class="delete2-form" id="delete2-form">
+            <h2>Delete Template</h2>
+            <form onsubmit="deleteTemplate(event)">
+              <label for="serv-temp">Service:</label>
+              <input type="text" id="service-delt" name="service-delt" required>
+
+              <button class="delete-button" type="submit">Delete</button>
+            </form>
+            <button class="cancel-button" onclick="closedel2PopupForm()">Cancel</button>
+          </div>
         </div>
       </div>
       <!-- end of Template-->
@@ -112,7 +205,7 @@
         <h3 style="text-align: center;">Send Mail</h3>
         <hr class="line">
         <div class="container2">
-          <h1>New SMS Message</h1>
+          <h1>New Message</h1>
           <form>
             <label for="subject">Subject:</label>
             <input type="text" id="subject" name="subject">
@@ -173,8 +266,28 @@
 
       <!--Trash-->
       <div id="trash" class="page">
-        <h2>Trash</h2>
-        <p>This is the Trash page content.</p>
+        <h2 style="text-align: center;">Trash</h2>
+        <hr>
+        <br>
+        <div id="report">
+          <input type="text" id="filterInput" placeholder="Search...">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Service</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in email_report[-5:]|reverse %}
+              <tr>
+                <td>{{ item['recipient'] }}</td>
+                <td>{{ item['service'] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
       <!-- end of Trash-->
     </div>
@@ -341,6 +454,263 @@
   // Add click event listener to each navigation link
   navigationLinks.forEach(function (link) {
     link.addEventListener('click', handleNavigationClick);
+  });
+  
+const itemList = document.getElementById('itemList');
+const categorySelect = document.getElementById('category');
+
+// Function to display the filtered items
+function displayItems(data, category) {
+  const filteredItems = category === 'all' ? data : data.filter(item => item[0] === category);
+
+  const itemElements = filteredItems.map(item => `
+    <div class="item">
+      <h3>${item[1]}</h3>
+      <p>Service: ${item[0]}</p>
+    </div>
+  `);
+
+  itemList.innerHTML = itemElements.join('');
+}
+
+// Event listener for category selection change
+categorySelect.addEventListener('change', () => {
+    const selectedCategory = categorySelect.value;
+    fetch('/data')
+        .then(response => response.json())
+        .then(data => displayItems(data, selectedCategory))
+        .catch(error => console.error('Error fetching data:', error));
+});
+
+// Initial fetch of data and display of all items
+fetch('/data')
+  .then(response => response.json())
+  .then(data => {
+    // Get unique services from the first position of each tuple (item[0])
+    const uniqueServices = [...new Set(data.map(item => item[0]))];
+
+    // Populate the select options
+    const selectOptions = ['<option value="all">All</option>'].concat(uniqueServices.map(service => `<option value="${service}">${service}</option>`));
+    categorySelect.innerHTML = selectOptions.join('');
+
+    displayItems(data, 'all');
+  })
+  .catch(error => console.error('Error fetching data:', error));
+
+  // SAVE CLIENT
+  // Function to open the popup form
+  function openPopupForm() {
+    document.getElementById('popupForm').style.display = 'block';
+  }
+
+  // Function to close the popup form
+  function closePopupForm() {
+    document.getElementById('popupForm').style.display = 'none';
+  }
+
+  // Function to save the data and submit the form
+  function saveClient(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value;
+    const service = document.getElementById('service-save').value;
+
+    // Create an object with the data to be sent to the server
+    const data = {
+      email: email,
+      service: service
+    };
+
+    // Make a POST request to the server to save the data
+    fetch('/save_client', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Client added successfully!');
+        // Close the popup form and refresh the page to display the updated templates
+        closePopupForm();
+        location.reload();
+      } else {
+        alert('Failed to add client. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error saving client:', error);
+      alert('Failed to add client. Please try again.');
+    });
+  }
+
+  // Hide the popup form by default when the page loads
+  document.addEventListener('DOMContentLoaded', function () {
+    closePopupForm();
+  });
+
+  // DELETE
+  // Function to open the popup form
+  function deletePopupForm() {
+    document.getElementById('delete-form').style.display = 'block';
+  }
+
+  // Function to close the popup form
+  function closedelPopupForm() {
+    document.getElementById('delete-form').style.display = 'none';
+  }
+
+  // Function to save the data and submit the form
+  function deleteClient(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('email-del').value;
+    const service = document.getElementById('service-del').value;
+
+    // Create an object with the data to be sent to the server
+    const data = {
+      email: email,
+      service: service
+    };
+
+    // Make a POST request to the server to save the data
+    fetch('/delete_client', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Client removed successfully!');
+        // Close the popup form and refresh the page to display the updated templates
+        closedelPopupForm();
+        location.reload();
+      } else {
+        alert('Failed to remove client. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error removing client:', error);
+      alert('Failed to remove client. Please try again.');
+    });
+  }
+
+  // Hide the popup form by default when the page loads
+  document.addEventListener('DOMContentLoaded', function () {
+    closedelPopupForm();
+  });
+
+  //SAVE TEMPLATE
+  // Function to open the popup form
+  function openTemplateForm() {
+    document.getElementById('popup2Form').style.display = 'block';
+  }
+
+  // Function to close the popup form
+  function closetempPopupForm() {
+    document.getElementById('popup2Form').style.display = 'none';
+  }
+
+  // Function to save the data and submit the form
+  function saveTemplate(event) {
+    event.preventDefault();
+
+    const service = document.getElementById('serv-temp').value;
+    const salutation = document.getElementById('salute-temp').value;
+    const heading = document.getElementById('head-temp').value;
+    const message = document.getElementById('message-temp').value;
+    const endtag = document.getElementById('endtag-temp').value;
+
+    // Create an object with the data to be sent to the server
+    const data = {
+      service: service,
+      salutation: salutation,
+      heading: heading,
+      message: message,
+      endtag: endtag
+    };
+
+    // Make a POST request to the server to save the data
+    fetch('/save_template', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Template added successfully!');
+        // Close the popup form and refresh the page to display the updated templates
+        closetempPopupForm();
+        location.reload();
+      } else {
+        alert('Failed to add template. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error saving template:', error);
+      alert('Failed to add template. Please try again.');
+    });
+  }
+
+  // Hide the popup form by default when the page loads
+  document.addEventListener('DOMContentLoaded', function () {
+    closetempPopupForm();
+  });
+
+  // DELETE TEMPLATE
+  // Function to open the popup form
+  function deleteTemplateForm() {
+    document.getElementById('delete2-form').style.display = 'block';
+  }
+
+  // Function to close the popup form
+  function closedel2PopupForm() {
+    document.getElementById('delete2-form').style.display = 'none';
+  }
+
+  // Function to delete the data and submit the form
+  function deleteTemplate(event) {
+    event.preventDefault();
+
+    const service = document.getElementById('service-delt').value;
+
+    // Create an object with the data to be sent to the server
+    const data = {
+      service: service
+    };
+
+    // Make a POST request to the server to save the data
+    fetch('/delete_template', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (response.ok) {
+        alert('Service removed successfully!');
+        // Close the popup form and refresh the page to display the updated templates
+        closedel2PopupForm();
+        location.reload();
+      } else {
+        alert('Failed to remove service. Please try again.');
+      }
+    })
+    .catch(error => {
+      console.error('Error removing service:', error);
+      alert('Failed to remove service. Please try again.');
+    });
+  }
+
+  // Hide the popup form by default when the page loads
+  document.addEventListener('DOMContentLoaded', function () {
+    closedel2PopupForm();
   });
 
   </script>
