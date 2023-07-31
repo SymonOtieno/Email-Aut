@@ -182,7 +182,7 @@ def send():
             msg.attach(mt_html)
             
             # Load the image file
-            with open('static/images/email2.png', 'rb') as img_file:
+            with open('static/images/mfs-tech-logo-2.png', 'rb') as img_file:
                 # Create an image MIME attachment
                 mt_image = MIMEImage(img_file.read())
                 mt_image.add_header('Content-ID', '<logo>')
