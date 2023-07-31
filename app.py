@@ -42,6 +42,7 @@ def login():
     conn = get_db_connection()
     cur = conn.cursor()
     cur2 = conn.cursor()
+    
     templ = conn.cursor()
     reports = conn.cursor()
     error = None
@@ -57,10 +58,16 @@ def login():
         for report in reports:
             email_report.append({'recipient': report[1], 'subject': report[2], 'timestamp': report[3], 'service':report[4]})
 
-        cur2.execute("SELECT * FROM email_listing WHERE is_deleted = FALSE")
+        cur.execute("SELECT * FROM email_listing WHERE is_deleted = FALSE")
         records = []
-        for record in cur2:
+        for record in cur:
             records.append({'id': record[0], 'email': record[1], 'service': record[2]})
+        
+        cur.execute("SELECT * FROM email_listing WHERE is_deleted = TRUE")
+        deleted_records = []
+        for deleted in cur:
+            deleted_records.append({'id': deleted[0], 'email': deleted[1], 'service': deleted[2]})
+
         username = request.form['username']
         passwd = request.form['password']
 
@@ -69,7 +76,7 @@ def login():
         if data is None:
             return "Username or Password wrong"
         else:
-            return render_template("index.html", records=records, templates=templates, email_report=email_report, username=username)
+            return render_template("index.html", records=records, deleted_records=deleted_records, templates=templates, email_report=email_report, username=username)
 
 # Template Route
 @app.route('/page/<page_name>')

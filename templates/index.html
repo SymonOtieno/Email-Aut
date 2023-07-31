@@ -279,10 +279,10 @@
               </tr>
             </thead>
             <tbody>
-              {% for item in email_report[-5:]|reverse %}
+              {% for deleted in deleted_records[-5:]|reverse %}
               <tr>
-                <td>{{ item['recipient'] }}</td>
-                <td>{{ item['service'] }}</td>
+                <td>{{ deleted['email'] }}</td>
+                <td>{{ deleted['service'] }}</td>
               </tr>
               {% endfor %}
             </tbody>
