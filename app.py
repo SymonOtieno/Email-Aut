@@ -25,22 +25,6 @@ def get_db_connection():
                             password=os.environ['DB_PASSWORD'])
     return conn
 
-# Login endpoint
-@app.route("/")
-def home():
-        return render_template('login.html')
-
-@app.route("/home", methods=["POST"])
-def index():
-    # Your login logic here...
-    # After successful authentication, set the 'logged_in' flag in the session
-    session['logged_in'] = True
-
-    previous_page = request.referrer
-    
-    return redirect(previous_page or url_for('home'))
-
-
 # Custom Jinja filter for formatting timestamp
 def format_timestamp(timestamp):
     return datetime.strftime(timestamp, '%Y-%m-%d %H:%M:%S')
@@ -87,7 +71,6 @@ def login():
         if data is None:
             return "Username or Password wrong"
         else:
-            session['logged_in'] = True
             return render_template("index.html", records=records, deleted_records=deleted_records, templates=templates, email_report=email_report, username=username)
 
 # Template Route
