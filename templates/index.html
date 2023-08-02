@@ -2,9 +2,10 @@
 <html>
 
 <head>
-  <title>Mfs Mail Aut</title>
+  <title>MFS Mail Aut</title>
   <script src="https://kit.fontawesome.com/c493d3eb23.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="../static/css/styl.css">
+  <link rel="icon" href="/static/images/mfs-tech-logo-2.png" type="image/png">
 </head>
 
 <body>
@@ -32,7 +33,6 @@
         <p>&copy; 2023 MFS Limited.</p>
       </div>
     </div>
-
     <div class="content">
       <div class="statistics">
         <div class="statistic">
@@ -118,7 +118,7 @@
               <label for="service-temp">Service:</label>
               <input type="text" id="service-save" name="service-save" required>
 
-              <button class="add-button" type="submit">Add</button>
+              <button class="add-button" type="submit">Save</button>
             </form>
             <button class="cancel-button" onclick="closePopupForm()">Cancel</button>
           </div>
@@ -132,7 +132,7 @@
               <label for="service-temp">Service:</label>
               <input type="text" id="service-del" name="service-del" required>
 
-              <button class="delete-button" type="submit">Delete</button>
+              <button class="delete-button" type="submit">Remove</button>
             </form>
             <button class="cancel-button" onclick="closedelPopupForm()">Cancel</button>
           </div>
@@ -179,7 +179,7 @@
               <label for="endtag-temp">Endtag:</label>
               <input type="text" id="endtag-temp" name="endtag-temp" required>
 
-              <button class="add-button" type="submit">Add</button>
+              <button class="add-button" type="submit">Save</button>
             </form>
             <button class="cancel-button" onclick="closetempPopupForm()">Cancel</button>
           </div>
@@ -190,7 +190,7 @@
               <label for="serv-temp">Service:</label>
               <input type="text" id="service-delt" name="service-delt" required>
 
-              <button class="delete-button" type="submit">Delete</button>
+              <button class="delete-button" type="submit">Remove</button>
             </form>
             <button class="cancel-button" onclick="closedel2PopupForm()">Cancel</button>
           </div>
@@ -712,6 +712,42 @@ fetch('/data')
   document.addEventListener('DOMContentLoaded', function () {
     closedel2PopupForm();
   });
+
+  // Add an event listener to the navigation links
+navigationLinks.forEach(function (link) {
+  link.addEventListener('click', function (event) {
+    // Prevent the default link behavior
+    event.preventDefault();
+
+    // Get the target page and store it in localStorage
+    const targetPage = this.getAttribute('href');
+    localStorage.setItem('selectedPage', targetPage);
+
+    // Hide all the pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(function (page) {
+      page.style.display = 'none';
+    });
+
+    // Show the clicked page
+    document.querySelector(targetPage).style.display = 'block';
+  });
+});
+
+// On page load, check if a page was previously selected and show it
+document.addEventListener('DOMContentLoaded', function () {
+  const selectedPage = localStorage.getItem('selectedPage');
+  if (selectedPage) {
+    // Hide all the pages
+    const pages = document.querySelectorAll('.page');
+    pages.forEach(function (page) {
+      page.style.display = 'none';
+    });
+
+    // Show the selected page
+    document.querySelector(selectedPage).style.display = 'block';
+  }
+});
 
   </script>
 </body>

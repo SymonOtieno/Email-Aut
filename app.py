@@ -24,6 +24,10 @@ def get_db_connection():
                             user=os.environ['DB_USERNAME'],
                             password=os.environ['DB_PASSWORD'])
     return conn
+# Login endpoint
+@app.route("/")
+def home():
+    return render_template('login.html')
 
 # Custom Jinja filter for formatting timestamp
 def format_timestamp(timestamp):

@@ -5,10 +5,11 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        font-family: "Lucida Console", "Courier New", monospace;
     }
     
     .site-header {
-        color: rgb(23, 19, 37);
+        color: rgb(56, 231, 208);
         width: 50%;
         height: 10px; 
         display: flex;
@@ -22,7 +23,7 @@
     }
 
     .header {
-        background-color: #f87b06;
+        background-color: #f7fafa;
         padding: 20px;
         top: 0;
         left: 0;
@@ -36,7 +37,7 @@
     }
     .sidebar {
         width: 25%;
-        background-color: #f1f1f1;
+        background-color: #9BCB53;
         padding: 20px;
         position: fixed;
     }
@@ -113,7 +114,7 @@
         align-items: center;
         justify-content: flex-end;
         padding: 10px;
-        background-color: #f87b06;
+        background-color: #f7fafa;
     }
 
     .search-bar input[type="text"] {
@@ -192,7 +193,7 @@
       flex: 1;
       text-align: center;
       padding: 10px;
-      background-color: #d4e4dd;
+      background-color: #9BCB53;
       border-radius: 4px;
       margin-right: 10px;
       display: flex;
@@ -210,7 +211,7 @@
     .statistic-number {
       font-size: 24px;
       font-weight: bold;
-      color: #0ed8bd;
+      color: #152779;
       margin-bottom: 5px;
     }
     
@@ -268,12 +269,13 @@
     
     .button {
       display: inline-block;
-      padding: 50px 40px;
+      padding: 40px 30px;
       border: 2px solid #0bd693;
       border-radius: 4px;
       transition: border-color 0.3s ease;
       margin-right: 30px;
       margin-bottom: 20px;
+      font-size: 14px;
     }
 
     .button:last-child {
@@ -321,7 +323,7 @@
     .container2 {
       max-width: 800px;
       margin: 0 auto;
-      background-color: #3fcc91;
+      background-color: #9BCB53;
       border-radius: 8px;
       box-shadow: 0 2px 4px rgba(221, 94, 9, 0.1);
       padding: 40px;
@@ -403,8 +405,9 @@
     }
 
     .item {
+      word-wrap: break-word;
       background-color: #f9f9f9;
-      border: 1px solid #da6d07;
+      border: 1px solid #12abe7;
       padding: 10px;
       border-radius: 5px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -412,21 +415,23 @@
 
     .item h3 {
       margin-bottom: 10px;
-      font-size: 18px;
+      font-size: 14px;
+      color: #12abe7;
     }
 
     .item p {
-      font-size: 14px;
+      font-size: 12px;
       color: #666;
     }
 
     /* Style for the category select dropdown */
     #category {
       padding: 8px 12px;
-      border: 1px solid #ddd;
+      border: 1px solid #12abe7;
       border-radius: 5px;
       font-size: 14px;
-      color: #444;
+      font-weight: bold;
+      color: #062374;
       background-color: #fff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
@@ -534,4 +539,8 @@
     
     .floating-button-container:hover .floating-button-dropdown {
       display: block;
+    }
+
+    .cancel-button{
+      margin-top: 20px;
     }
