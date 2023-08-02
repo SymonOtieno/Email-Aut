@@ -5,7 +5,7 @@
         display: flex;
         flex-direction: column;
         min-height: 100vh;
-        font-family: "Lucida Console", "Courier New", monospace;
+        font-family: "museo_sans_rounded900";
     }
     
     .site-header {
@@ -63,10 +63,6 @@
         align-items: center;
         color: #333;
         transition: color 0.3s ease;
-    }
-
-    .menu-item a:hover {
-        color: #f00;
     }
 
     .menu-item i {
@@ -276,6 +272,7 @@
       margin-right: 30px;
       margin-bottom: 20px;
       font-size: 14px;
+      width: 20%;
     }
 
     .button:last-child {

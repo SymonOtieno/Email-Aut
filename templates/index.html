@@ -6,6 +6,7 @@
   <script src="https://kit.fontawesome.com/c493d3eb23.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="../static/css/styl.css">
   <link rel="icon" href="/static/images/mfs-tech-logo-2.png" type="image/png">
+  <link rel="stylesheet" href="../static/fonts/amble-web/stylesheet.css"
 </head>
 
 <body>
@@ -40,7 +41,7 @@
             <p class="statistic-number" data-count="500">0</p>
             <h3>Email Sent</h3>
           </div>
-          <img src="/static/images/send.png" alt="Logo" class="logo">
+          <img src="/static/images/template.png" alt="Logo" class="logo">
         </div>
         <div class="statistic">
           <div class="statistic-info">
@@ -149,7 +150,7 @@
         <br>
         <div class="button-container">
           {% for template in templates %}
-          <div class="button" onclick="showTemplatePopup('{{ template.service }}')"> <img src="/static/images/send.png" alt="Logo"> {{template.service}} Template</div>
+          <div class="button" onclick="showTemplatePopup('{{ template.service }}')"> <img src="/static/images/template2.png" alt="Logo"> {{template.service}} Template</div>
           {% endfor%}
         </div>
         <!-- Floating button container -->

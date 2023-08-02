@@ -77,48 +77,6 @@ def login():
         else:
             return render_template("index.html", records=records, deleted_records=deleted_records, templates=templates, email_report=email_report, username=username)
 
-# Template Route
-@app.route('/page/<page_name>')
-def load_page(page_name):
-        selected_value = session.get('selectedValue')
-        selected_value = selected_value.upper()
-        # Connect to the database
-        conn = get_db_connection()
-        cur = conn.cursor()
-        templ = conn.cursor()
-
-        # Retrieve data from the database
-        query = ("SELECT * FROM email_listing WHERE service=%s")
-        service = selected_value
-        params = (service,)
-        cur.execute(query, params)
-
-        query2 = ("SELECT * FROM templates WHERE service=%s")
-        service = selected_value
-        params = (service,)
-        templ.execute(query2, params)
-
-        templates = []
-        records = []
-        for record in cur:
-            records.append({'id': record[0], 'email': record[1], 'service': record[2]})
-        for template in templ:
-            templates.append({'service': template[1], 'salutation': template[2], 'heading': template[3], 
-                            'message': template[4],'endtag': template[5]})
-            
-        print(templates)
-        print(records)
-        # Render the HTML template with the data
-        return render_template('default.html', records=records, templates=templates)
-
-# Submit Route     
-@app.route('/submit', methods=['POST'])
-def submit():
-    clients = request.form['items']
-    session['clients'] = clients
-
-    return redirect(url_for('load_page', clients=clients))
-
 # Send Route
 @app.route('/send', methods=['POST'])
 def send():
@@ -143,7 +101,7 @@ def send():
 
          #Drop SMS service data
         # Use the DELETE statement to delete data from the database table
-        delete_query = "DELETE FROM email_listing WHERE service = %s"
+        delete_query = "UPDATE email_listing SET is_deleted = TRUE WHERE service = %s"
         delete_value = (service, )
         cur.execute(delete_query, delete_value)
         conn.commit()
@@ -365,39 +323,3 @@ def delete_template():
         return jsonify({'success': True})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
-
-@app.route('/add_option', methods=['POST'])
-def add_option():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    option = request.form['name']
-  
-    
-    query = ("SELECT service FROM templates WHERE service = %s AND is_deleted = FALSE")
-    service = option
-    params = (service,)
-    cur.execute(query, params)
-    records = cur.fetchall()
-
-    if(len(records)<1):
-        option_lower = option.lower()
-        option = [option]
-        query = ("INSERT INTO templates (service) VALUES (%s)")
-        cur.execute(query, (option[0],))
-        query2 = ("INSERT INTO email_listing (service) VALUES (%s)")
-        cur.execute(query2, (option[0],))
-        conn.commit()
-        return jsonify({'message': 'Option added successfully'})
-    
-    else:
-        return jsonify({'message': 'Option Already Exists'})
-
-
-@app.route('/process_selected_value', methods=['POST'])
-def process_selected_value():
-    selected_value = request.json['selectedValue']
-
-    session['selectedValue'] = selected_value
-
-    # Return a response if needed
-    return jsonify({'message': 'Value received and processed successfully.'})
