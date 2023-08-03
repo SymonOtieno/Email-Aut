@@ -109,15 +109,20 @@ def send():
         # Update the email_listings database
         elements = recipients[0].split('\r\n')
         
+
         for email in elements:
-            data = [(email,service)]
-            query = "INSERT INTO email_listing (email, service) VALUES (%s, %s)"
-            cur.executemany(query, data)
+            clean_data = email.strip()
+            if clean_data:
+                data = [(email,service)]
+                query = "INSERT INTO email_listing (email, service) VALUES (%s, %s)"
+                cur.executemany(query, data)
 
-            # Commit the changes to the database
-            conn.commit()
+                # Commit the changes to the database
+                conn.commit()
+            else:
+                print("Data is empty after cleaning")
 
-        query = ("SELECT * FROM templates WHERE service = %s")
+        query = ("SELECT * FROM templates WHERE service = %s AND is_deleted = FALSE")
         params = (service,)
         cur.execute(query, params)
         records = []
@@ -127,7 +132,7 @@ def send():
         
         html_content = render_template("template.html",records=records)
 
-        query = ("SELECT email FROM email_listing WHERE service = %s")
+        query = ("SELECT email FROM email_listing WHERE service = %s AND is_deleted = FALSE")
         params = (service,)
         cur.execute(query, params)
         records = cur.fetchall()
